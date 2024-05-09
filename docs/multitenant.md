@@ -24,7 +24,7 @@ Azure AI Search リソースは up にしているだけで月5万程度の金�
 1. 必要に応じてあらかじめ Azure OpenAI をデプロイしておく
 2. `azd auth login`
 3. `azd init -t azure-search-openai-demo`
-   - GitHub からダウンロード済みの場合は `azd env init`
+   - GitHub からダウンロード済みの場合は `azd env new`
    - > Enter a new environment name: {環境名}
 4. /.azure/{env環境名name}/.env に追加
    ```
