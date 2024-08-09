@@ -65,14 +65,18 @@ if ($env:USE_FEATURE_INT_VECTORIZATION) {
   $integratedVectorizationArg = "--useintvectorization $env:USE_FEATURE_INT_VECTORIZATION"
 }
 
-if ($env:AZURE_OPENAI_API_KEY) {
-  $openaiApiKeyArg = "--openaikey $env:AZURE_OPENAI_API_KEY"
+if ($env:AZURE_OPENAI_API_KEY_OVERRIDE) {
+  $openaiApiKeyArg = "--openaikey $env:AZURE_OPENAI_API_KEY_OVERRIDE"
 } elseif ($env:OPENAI_API_KEY) {
   $openaiApiKeyArg = "--openaikey $env:OPENAI_API_KEY"
 }
 
 $cwd = (Get-Location)
 $dataArg = "`"$cwd/data/*`""
+$additionalArgs = ""
+if ($args) {
+  $additionalArgs = "$args"
+}
 
 $argumentList = "./app/backend/prepdocs.py $dataArg --verbose " + `
 "--subscriptionid $env:AZURE_SUBSCRIPTION_ID " + `
@@ -88,7 +92,8 @@ $argumentList = "./app/backend/prepdocs.py $dataArg --verbose " + `
 "$adlsGen2StorageAccountArg $adlsGen2FilesystemArg $adlsGen2FilesystemPathArg  " + `
 "$tenantArg $aclArg " + `
 "$disableVectorsArg $localPdfParserArg $localHtmlParserArg " + `
-"$integratedVectorizationArg "
+"$integratedVectorizationArg " + `
+"$additionalArgs "
 
 $argumentList
 

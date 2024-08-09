@@ -63,10 +63,15 @@ if [ -n "$USE_FEATURE_INT_VECTORIZATION" ]; then
   integratedVectorizationArg="--useintvectorization $USE_FEATURE_INT_VECTORIZATION"
 fi
 
-if [ -n "$AZURE_OPENAI_API_KEY" ]; then
-  openAiApiKeyArg="--openaikey $AZURE_OPENAI_API_KEY"
+if [ -n "$AZURE_OPENAI_API_KEY_OVERRIDE" ]; then
+  openAiApiKeyArg="--openaikey $AZURE_OPENAI_API_KEY_OVERRIDE"
 elif [ -n "$OPENAI_API_KEY" ]; then
   openAiApiKeyArg="--openaikey $OPENAI_API_KEY"
+fi
+
+additionalArgs=""
+if [ $# -gt 0 ]; then
+  additionalArgs="$@"
 fi
 
 ./.venv/bin/python ./app/backend/prepdocs.py './data/*' --verbose \
@@ -83,4 +88,5 @@ $searchImagesArg $visionEndpointArg \
 $adlsGen2StorageAccountArg $adlsGen2FilesystemArg $adlsGen2FilesystemPathArg \
 $tenantArg $aclArg \
 $disableVectorsArg $localPdfParserArg $localHtmlParserArg \
-$integratedVectorizationArg
+$integratedVectorizationArg \
+$additionalArgs

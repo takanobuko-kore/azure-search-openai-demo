@@ -19,20 +19,42 @@ You should typically enable these features before running `azd up`. Once you've 
 
 ## Using GPT-4
 
-We generally find that most developers are able to get high quality answers using GPT 3.5. However, if you want to try GPT-4, you can do so by following these steps:
+(Instructions for **GPT-4**, **GPT-4o**, and **GPT-4o mini** models are also included here.)
+
+We generally find that most developers are able to get high-quality answers using GPT-3.5. However, if you want to try GPT-4, GPT-4o, or GPT-4o mini, you can do so by following these steps:
 
 Execute the following commands inside your terminal:
 
-1. To set the name of the deployment, run this command with a new unique name.
+1. To set the name of the deployment, run this command with a unique name in your Azure OpenAI account. You can use any deployment name, as long as it's unique in your Azure OpenAI account.
+
+    ```bash
+    azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT <your-deployment-name>
+    ```
+
+    For example:
 
     ```bash
     azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT chat4
     ```
 
-1. To set the GPT model name to a **gpt-4** version from the [available models](https://learn.microsoft.com/azure/ai-services/openai/concepts/models), run this command with the appropriate gpt model name.
+1. To set the GPT model name to a **gpt-4**, **gpt-4o**, or **gpt-4o mini** version from the [available models](https://learn.microsoft.com/azure/ai-services/openai/concepts/models), run this command with the appropriate GPT model name.
+
+    For GPT-4:
 
     ```bash
     azd env set AZURE_OPENAI_CHATGPT_MODEL gpt-4
+    ```
+
+    For GPT-4o:
+
+    ```bash
+    azd env set AZURE_OPENAI_CHATGPT_MODEL gpt-4o
+    ```
+
+    For GPT-4o mini:
+
+    ```bash
+    azd env set AZURE_OPENAI_CHATGPT_MODEL gpt-4o-mini
     ```
 
 1. To set the Azure OpenAI deployment capacity, run this command with the desired capacity.
@@ -43,8 +65,22 @@ Execute the following commands inside your terminal:
 
 1. To set the Azure OpenAI deployment version from the [available versions](https://learn.microsoft.com/azure/ai-services/openai/concepts/models), run this command with the appropriate version.
 
+    For GPT-4:
+
     ```bash
     azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT_VERSION turbo-2024-04-09
+    ```
+
+    For GPT-4o:
+
+    ```bash
+    azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT_VERSION 2024-05-13
+    ```
+
+    For GPT-4o mini:
+
+    ```bash
+    azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT_VERSION 2024-07-18
     ```
 
 1. To update the deployment with the new parameters, run this command.
@@ -166,7 +202,7 @@ By default, the deployed Azure web app allows users to chat with all your indexe
 
 ## Enabling user document upload
 
-You can enable an optional user document upload system to allow users to upload their own documents and chat with them. This feature requires you to first [enable login and document level access control](docs/login_and_acl.md). Then you can enable the optional user document upload system by setting an azd environment variable:
+You can enable an optional user document upload system to allow users to upload their own documents and chat with them. This feature requires you to first [enable login and document level access control](./login_and_acl.md). Then you can enable the optional user document upload system by setting an azd environment variable:
 
 `azd env set USE_USER_UPLOAD true`
 
@@ -205,7 +241,7 @@ Both these repositories adhere to the same [HTTP protocol for AI chat apps](http
 
 ## Adding an OpenAI load balancer
 
-As discussed in more details in our [productionizing guide](docs/productionizing.md), you may want to consider implementing a load balancer between OpenAI instances if you are consistently going over the TPM limit.
+As discussed in more details in our [productionizing guide](./productionizing.md), you may want to consider implementing a load balancer between OpenAI instances if you are consistently going over the TPM limit.
 Fortunately, this repository is designed for easy integration with other repositories that create load balancers for OpenAI instances. For seamless integration instructions with this sample, please check:
 
 * [Scale Azure OpenAI for Python with Azure API Management](https://learn.microsoft.com/azure/developer/python/get-started-app-chat-scaling-with-azure-api-management)
@@ -213,7 +249,7 @@ Fortunately, this repository is designed for easy integration with other reposit
 
 ## Deploying with private endpoints
 
-It is possible to deploy this app with public access disabled, using Azure private endpoints and private DNS Zones. For more details, read [the private deployment guide](docs/deploy_private.md). That requires a multi-stage provisioning, so you will need to do more than just `azd up` after setting the environment variables.
+It is possible to deploy this app with public access disabled, using Azure private endpoints and private DNS Zones. For more details, read [the private deployment guide](./deploy_private.md). That requires a multi-stage provisioning, so you will need to do more than just `azd up` after setting the environment variables.
 
 ## Using local parsers
 

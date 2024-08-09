@@ -80,6 +80,7 @@ class RetrieveThenReadVisionApproach(Approach):
             raise ValueError("The most recent message content must be a string.")
 
         overrides = context.get("overrides", {})
+        seed = overrides.get("seed", None)
         auth_claims = context.get("auth_claims", {})
         use_text_search = overrides.get("retrieval_mode") in ["text", "hybrid", None]
         use_vector_search = overrides.get("retrieval_mode") in ["vectors", "hybrid", None]
@@ -141,15 +142,14 @@ class RetrieveThenReadVisionApproach(Approach):
             new_user_content=user_content,
             max_tokens=self.gpt4v_token_limit - response_token_limit,
         )
-        chat_completion = (
-            await self.openai_client.chat.completions.create(
-                model=self.gpt4v_deployment if self.gpt4v_deployment else self.gpt4v_model,
-                messages=updated_messages,
-                temperature=overrides.get("temperature", 0.3),
-                max_tokens=response_token_limit,
-                n=1,
-            )
-        ).model_dump()
+        chat_completion = await self.openai_client.chat.completions.create(
+            model=self.gpt4v_deployment if self.gpt4v_deployment else self.gpt4v_model,
+            messages=updated_messages,
+            temperature=overrides.get("temperature", 0.3),
+            max_tokens=response_token_limit,
+            n=1,
+            seed=seed,
+        )
 
         data_points = {
             "text": sources_content,
@@ -188,8 +188,11 @@ class RetrieveThenReadVisionApproach(Approach):
             ],
         }
 
-        completion = {}
-        completion["message"] = chat_completion["choices"][0]["message"]
-        completion["context"] = extra_info
-        completion["session_state"] = session_state
-        return completion
+        return {
+            "message": {
+                "content": chat_completion.choices[0].message.content,
+                "role": chat_completion.choices[0].message.role,
+            },
+            "context": extra_info,
+            "session_state": session_state,
+        }
