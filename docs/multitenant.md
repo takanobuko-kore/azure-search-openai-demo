@@ -5,13 +5,9 @@ Azure AI Search リソースは up にしているだけで月5万程度の金�
 
 ## 前提
 下記手順は、原則 Japan East での構築を想定  
-**ただし、`text-embedding-3` は Japan East で使用不可**  
-※ 2024-05-03 現在  
-[Azure OpenAI Service モデル#パブリック クラウド リージョン](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/concepts/models#public-cloud-regions-2)
-
-**統合ベクター化はパブリック プレビュー段階**  
-※ 2024-05-03 現在  
-[Azure AI Search 内の統合データのチャンキングと埋め込み](https://learn.microsoft.com/ja-jp/azure/search/vector-search-integrated-vectorization)
+**ただし、`Document Intelligence` は Japan East で使用不可**  
+※ 2024-08-20 現在  
+[ドキュメント インテリジェンス レイアウト モデル](https://learn.microsoft.com/ja-jp/azure/ai-services/document-intelligence/concept-layout?view=doc-intel-4.0.0)
 
 データソースが論理的に分かれているため、検索の過程においてはあるテナントが違うテナントのリソースを検索してしまうことはない  
 **ただし、データソースとして提示される URL は public のため、URL さえ知っていれば認証なくインターネット上から閲覧できてしまうことに注意**  
@@ -45,18 +41,24 @@ Azure AI Search リソースは up にしているだけで月5万程度の金�
    AZURE_OPENAI_SERVICE="{Azure OpenAI リソース名}"
    AZURE_OPENAI_CHATGPT_MODEL="{モデル名}"
    AZURE_OPENAI_CHATGPT_DEPLOYMENT="{デプロイ名}"
+   AZURE_OPENAI_EMB_MODEL_NAME="{埋め込みモデル モデル名}"
    AZURE_OPENAI_EMB_DEPLOYMENT="{埋め込みモデル デプロイ名}"
 
-   # コストを最小化する場合
-   AZURE_APP_SERVICE_SKU="F1"
-   AZURE_USE_APPLICATION_INSIGHTS="false"
+   # GPT-4 を使用する場合
+   AZURE_OPENAI_CHATGPT_MODEL="gpt-4"
+   AZURE_OPENAI_CHATGPT_DEPLOYMENT_VERSION="turbo-2024-04-09"
 
-   # 統合ベクター化を使用する場合
-   USE_FEATURE_INT_VECTORIZATION="true"
+   # GPT-4o を使用する場合
+   AZURE_OPENAI_CHATGPT_MODEL="gpt-4o"
+   AZURE_OPENAI_CHATGPT_DEPLOYMENT_VERSION="2024-05-13"
 
    # text-embedding-3 を使用する場合
    AZURE_OPENAI_EMB_MODEL_NAME="text-embedding-3-large"
    AZURE_OPENAI_EMB_DEPLOYMENT_VERSION=1
+
+   # コストを最小化する場合
+   AZURE_APP_SERVICE_SKU="F1"
+   AZURE_USE_APPLICATION_INSIGHTS="false"
 
    # GPT-4V を使用する場合
    USE_GPT4V="true"
@@ -72,7 +74,7 @@ Azure AI Search リソースは up にしているだけで月5万程度の金�
    | 変更前 | 変更後 |
    | --- | --- |
    | param storageContainerName string = 'content' | param storageContainerName string // Set in main.parameters.json |
-   | @description('Location for the Document Intelligence resource group')<br>@allowed([ 'eastus', 'westus2', 'westeurope' ]) | @description('Location for the Document Intelligence resource group')<br>@allowed([ 'eastus', 'westus2', 'westeurope', 'japaneast' ]) |
+   | var defaultOpenAiDeployments = [<br>(中略)<br>name: chatGpt.deploymentName<br>(中略)<br>sku: {<br>name: 'Standard' | var defaultOpenAiDeployments = [<br>(中略)<br>name: chatGpt.deploymentName<br>(中略)<br>sku: {<br>name: 'GlobalStandard' |
 3. /data にデータを配置
 4. `azd up`
    - > Select an Azure Subscription to use: {サブスクリプション}
